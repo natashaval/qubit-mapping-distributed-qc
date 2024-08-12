@@ -188,8 +188,8 @@ class DynamicLookaheadSwap(TransformationPass):
             0  # curr_idx variable to count how many operation gate in the circuit
         )
         for layer in dag.layers():
-
             subdag = layer["graph"]
+            print(curr_idx, subdag) # TODO: to be removed
             act_list = []
             # initialize first do while with original coupling_map
             for node in subdag.op_nodes():

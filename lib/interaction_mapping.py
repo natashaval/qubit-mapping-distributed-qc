@@ -16,7 +16,7 @@ class InteractionMapping:
 
         # run calculation
         self.calculate_final_maps()
-    
+
     def calculate_logical_priority(
         self, dag: DAGCircuit
     ):  # the total number of operation gates in logical wire
@@ -172,8 +172,10 @@ class InteractionMapping:
                         max_qpi_value,
                     )
 
+                print(f"~~~~ BEFORE MAPS: ", self.maps) # TODO: to be removed
                 for temp in m_temp:
                     self.maps.append(temp)
+                print(f"~~~~ AFTER MAPS APPEND: ", self.maps) # TODO: to be removed
             logical_priority.pop(curr_qubit)
         return self.maps
 
