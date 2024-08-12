@@ -18,12 +18,15 @@ def build_coupling_list_ring(num_qubits: int, num_group: int):
         coupling_list.append((i * num_qubits - 1, i * num_qubits))
     return coupling_list
 
+# coupling list full - all nodes connected
+def build_coupling_list_full(num_qubits: int):
+    cm = CouplingMap.from_full(num_qubits)
+    return cm.get_edges()
 
 # coupling list line
 def build_coupling_list_line(num_qubits: int, num_group: int):
     cm = CouplingMap.from_line(num_qubits=num_qubits * num_group, bidirectional=True)
     return cm.get_edges()
-
 
 # coupling list square
 def build_coupling_list_grid(num_rows: int, num_columns: int, num_group: int):
