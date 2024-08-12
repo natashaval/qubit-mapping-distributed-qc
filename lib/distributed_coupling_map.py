@@ -1,7 +1,5 @@
 from qiskit.transpiler import CouplingMap
-from qiskit.providers.fake_provider import GenericBackendV2
 from qiskit_ibm_runtime.fake_provider import FakeLondonV2
-from qiskit.visualization import plot_circuit_layout, plot_coupling_map
 
 
 # create ring
