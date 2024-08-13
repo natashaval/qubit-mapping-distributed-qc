@@ -23,6 +23,21 @@ def build_coupling_list_full(num_qubits: int):
     cm = CouplingMap.from_full(num_qubits)
     return cm.get_edges()
 
+def build_coupling_list_full_group(num_qubits: int, num_group: int):
+    coupling_list = []
+    for i in range(num_group):
+        cm = CouplingMap.from_full(num_qubits, bidirectional=True)
+        edges = [
+            (i * num_qubits + node1, i * num_qubits + node2)
+            for node1, node2 in cm.get_edges()
+        ]
+        coupling_list.extend(edges)
+
+    for i in range(1, num_group):
+        coupling_list.append((i * num_qubits, i * num_qubits - 1))
+        coupling_list.append((i * num_qubits - 1, i * num_qubits))
+    return coupling_list
+
 # coupling list line
 def build_coupling_list_line(num_qubits: int, num_group: int):
     cm = CouplingMap.from_line(num_qubits=num_qubits * num_group, bidirectional=True)
