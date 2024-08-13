@@ -124,6 +124,13 @@ class InteractionMapping:
         qpi_matrix = self.generate_qpi(self.dag)
         logical_priority = self.calculate_logical_priority(self.dag)
         physical_connectivity = self.calculate_physical_connectivity(self.coupling_map)
+
+        # check if fully connected, return corresponding index
+        if (all(value == len(self.coupling_map.physical_qubits) - 1 for value in physical_connectivity.values())):
+            self.maps = [[(idx, idx) for idx in range(self.dag.num_qubits())]]
+            self.qpi_rank[str(self.maps[0])] = self.coupling_map.physical_qubits
+            return self.maps
+
         logical_neighbors = self.calculate_logical_neighbors(self.dag)
         physical_neighbors = self.calculate_physical_neighbors(self.coupling_map)
 
@@ -172,10 +179,8 @@ class InteractionMapping:
                         max_qpi_value,
                     )
 
-                print(f"~~~~ BEFORE MAPS: ", self.maps) # TODO: to be removed
                 for temp in m_temp:
                     self.maps.append(temp)
-                print(f"~~~~ AFTER MAPS APPEND: ", self.maps) # TODO: to be removed
             logical_priority.pop(curr_qubit)
         return self.maps
 

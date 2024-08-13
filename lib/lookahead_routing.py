@@ -15,25 +15,27 @@ class DynamicLookaheadSwap(TransformationPass):
             self.coupling_map = coupling_map
         self.dlist = []  # save as index, instead of DAGOpNode
         self.op_gates = []  # save reference of gates
+        self.swap_add = 0 # TODO: to be removed
 
     def list_gates(
         self, dag: DAGCircuit
     ):  # populate gates at current_idx because list(iter(dag.op_nodes())) shuffled because of greedy algorithm
         gate_list = []
         for layer in dag.layers():
-            subdag = layer["graph"]
-            for node in subdag.op_nodes():
+            for node in layer["graph"].op_nodes():
                 gate_list.append(node)
         return gate_list
 
-    def list_gates_on_qubit_dag(self, dag: DAGCircuit):
+    def list_gates_on_qubit_dag(self, dag: DAGCircuit): # populate gates at current_idx because list(iter(dag.op_nodes())) shuffled because of greedy algorithm
         dependency_list = {qubit: [] for qubit in range(dag.num_qubits())}
-
-        for index, operation in enumerate(dag.op_nodes()):
-            qubits = [qubit._index for qubit in operation.qargs]
-            for qubit in qubits:  # handle single and two-qubit gate
-                dependency_list[qubit].append(index)
-
+        index = 0
+        for layer in dag.layers():
+            for node in layer['graph'].op_nodes():
+                qubits = [qubit._index for qubit in node.qargs]
+                if len(qubits) == 2: # only add two-qubit gate
+                    for qubit in qubits:  # handle single and two-qubit gate
+                        dependency_list[qubit].append(index)
+                index += 1
         return dependency_list
 
     def generate_possible_swaps(
@@ -50,6 +52,7 @@ class DynamicLookaheadSwap(TransformationPass):
                 current_layout.get_virtual_bits()[node.qargs[0]],
                 current_layout.get_virtual_bits()[node.qargs[1]],
             )
+            # only generate neighbors that is not assigned, not in candidate, and in current_layout mapping
             candi_list.extend(
                 [
                     (phy0, neighbor)
@@ -90,7 +93,6 @@ class DynamicLookaheadSwap(TransformationPass):
         return old_distance - new_distance
 
     """gate_list = in logical qubit"""
-
     def sum_effect(
         self,
         gate_list: list[int],
@@ -138,7 +140,7 @@ class DynamicLookaheadSwap(TransformationPass):
                 current_layout.get_virtual_bits()[node.qargs[1]],
             )
             distance = self.coupling_map.distance(phy0, phy1)
-
+            print(f"C act_idx {act_idx} node: {node.name} {node.qargs} distance: {distance}")
             if distance == 1:
                 self.dlist[idx0].pop(0)
                 self.dlist[idx1].pop(0)
@@ -151,13 +153,16 @@ class DynamicLookaheadSwap(TransformationPass):
                 )  # instead of sending gate memory address, send the operation
             else:
                 new_act_list.append(act_idx)
-
         return new_act_list, new_dag
 
     def measure_node(self, node: DAGOpNode, current_layout: Layout) -> DAGOpNode:
+        print(f"Measure Node qargs {node.qargs[0]._index}")
         log0 = current_layout.get_physical_bits()[node.qargs[0]._index]._index
-        classical0 = self.property_set["layout"].get_physical_bits()[log0]
-        node.cargs = (self.meas_register[classical0._index],)
+        print(f"Measure log {log0}")
+        classical0 = self.property_set["layout"].get_physical_bits()[log0]._index
+        print(f"Measure classical {classical0}")
+        print(f"Measure register {self.meas_register[classical0]}")
+        node.cargs = (self.meas_register[classical0],)
         return node
 
     def run(self, dag: DAGCircuit):
@@ -188,11 +193,13 @@ class DynamicLookaheadSwap(TransformationPass):
             0  # curr_idx variable to count how many operation gate in the circuit
         )
         for layer in dag.layers():
+            self.swap_add = 0 # TODO: to be removed
             subdag = layer["graph"]
-            print(curr_idx, subdag) # TODO: to be removed
+            print("Routing layer:", subdag) # TODO: to be removed
             act_list = []
             # initialize first do while with original coupling_map
             for node in subdag.op_nodes():
+                print("- Routing op node: ", curr_idx)
                 if (
                     node.op.num_qubits == 2
                 ):  # only check for two-qubit gates, cannot exclude >2 gate because there is barrier
@@ -206,7 +213,7 @@ class DynamicLookaheadSwap(TransformationPass):
                     ):  # handle measure node to conform with curr_layout
                         node = self.measure_node(node, current_layout)
 
-                    self.dlist[node.qargs[0]._index].pop(0)
+                    # self.dlist[node.qargs[0]._index].pop(0) # because in list_gates_on_dag do not include single-gate
                     new_dag.apply_operation_back(
                         node.op, qargs=node.qargs, cargs=node.cargs
                     )
@@ -214,6 +221,10 @@ class DynamicLookaheadSwap(TransformationPass):
             assigned_swap_list = []  # to avoid recursive swap
 
             while act_list:
+                if self.swap_add > 50: # TODO: to be removed
+                    raise Exception("Cannot find swap candidates.")
+                self.swap_add += 1
+                
                 act_list, new_dag = self.check_gate_connectivity(
                     act_list, new_dag, current_layout
                 )
@@ -276,4 +287,6 @@ class DynamicLookaheadSwap(TransformationPass):
 
                         order = current_layout.reorder_bits(new_dag.qubits)
                         new_dag.compose(swap_layer, qubits=order)
+                else:
+                    print("MCPE cost is empty, cannot add swap gate")
         return new_dag
