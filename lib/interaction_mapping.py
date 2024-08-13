@@ -13,6 +13,7 @@ class InteractionMapping:
         self.assigned_qubits = []
         self.assigned_physical_qubits = []
         self.qpi_rank = {}  # dict key = map of tuple(log, phy); value = total_qpi_value
+        self.swap_add = 0  # TODO: to be removed
 
         # run calculation
         self.calculate_final_maps()
@@ -95,7 +96,11 @@ class InteractionMapping:
                     + qpi_matrix[logical_from_assigned][curr_logical_qubit]
                 )
             max_qbn_value = max(qbn.values(), default=0)
-            qbn = {k: v for k, v in qbn.items() if v == max_qbn_value}
+            if all(qbn.values()) == 0:
+            # check if all QBN value is 0, then choose the first node
+                qbn = {next(iter(qbn)) : 0}
+            else:
+                qbn = {k: v for k, v in qbn.items() if v == max_qbn_value}
         return qbn, max_qbn_value
 
     def highest_index(self, dicts) -> int:
@@ -126,7 +131,10 @@ class InteractionMapping:
         physical_connectivity = self.calculate_physical_connectivity(self.coupling_map)
 
         # check if fully connected, return corresponding index
-        if (all(value == len(self.coupling_map.physical_qubits) - 1 for value in physical_connectivity.values())):
+        if all(
+            value == len(self.coupling_map.physical_qubits) - 1
+            for value in physical_connectivity.values()
+        ):
             self.maps = [[(idx, idx) for idx in range(self.dag.num_qubits())]]
             self.qpi_rank[str(self.maps[0])] = self.coupling_map.physical_qubits
             return self.maps

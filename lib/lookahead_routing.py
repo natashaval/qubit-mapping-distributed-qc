@@ -140,7 +140,6 @@ class DynamicLookaheadSwap(TransformationPass):
                 current_layout.get_virtual_bits()[node.qargs[1]],
             )
             distance = self.coupling_map.distance(phy0, phy1)
-            print(f"C act_idx {act_idx} node: {node.name} {node.qargs} distance: {distance}")
             if distance == 1:
                 self.dlist[idx0].pop(0)
                 self.dlist[idx1].pop(0)
@@ -155,14 +154,17 @@ class DynamicLookaheadSwap(TransformationPass):
                 new_act_list.append(act_idx)
         return new_act_list, new_dag
 
-    def measure_node(self, node: DAGOpNode, current_layout: Layout) -> DAGOpNode:
-        print(f"Measure Node qargs {node.qargs[0]._index}")
+    def measure_node(self, node: DAGOpNode, current_layout: Layout, num_clbits) -> DAGOpNode: # TODO: error in mapping qubits to clbits
         log0 = current_layout.get_physical_bits()[node.qargs[0]._index]._index
-        print(f"Measure log {log0}")
         classical0 = self.property_set["layout"].get_physical_bits()[log0]._index
-        print(f"Measure classical {classical0}")
-        print(f"Measure register {self.meas_register[classical0]}")
-        node.cargs = (self.meas_register[classical0],)
+        if classical0 < num_clbits:
+            node.cargs = (self.meas_register[classical0], )
+        else:
+            # node.cargs = (self.meas_register[log0], )
+            # cast again?
+            log0 = current_layout.get_physical_bits()[classical0]._index
+            classical0 = self.property_set['layout'].get_physical_bits()[log0]._index
+            node.cargs = (self.meas_register[classical0], )
         return node
 
     def run(self, dag: DAGCircuit):
@@ -195,11 +197,9 @@ class DynamicLookaheadSwap(TransformationPass):
         for layer in dag.layers():
             self.swap_add = 0 # TODO: to be removed
             subdag = layer["graph"]
-            print("Routing layer:", subdag) # TODO: to be removed
             act_list = []
             # initialize first do while with original coupling_map
             for node in subdag.op_nodes():
-                print("- Routing op node: ", curr_idx)
                 if (
                     node.op.num_qubits == 2
                 ):  # only check for two-qubit gates, cannot exclude >2 gate because there is barrier
@@ -211,7 +211,8 @@ class DynamicLookaheadSwap(TransformationPass):
                     if (
                         node.name == "measure"
                     ):  # handle measure node to conform with curr_layout
-                        node = self.measure_node(node, current_layout)
+                        continue # TODO: measure error in mapping qubit to clbits
+                        node = self.measure_node(node, current_layout, dag.num_clbits())
 
                     # self.dlist[node.qargs[0]._index].pop(0) # because in list_gates_on_dag do not include single-gate
                     new_dag.apply_operation_back(
@@ -221,10 +222,10 @@ class DynamicLookaheadSwap(TransformationPass):
             assigned_swap_list = []  # to avoid recursive swap
 
             while act_list:
-                if self.swap_add > 50: # TODO: to be removed
+                if self.swap_add > 1000: # TODO: stopper at 250, most 15 qubits failed at 500
                     raise Exception("Cannot find swap candidates.")
                 self.swap_add += 1
-                
+
                 act_list, new_dag = self.check_gate_connectivity(
                     act_list, new_dag, current_layout
                 )
@@ -287,6 +288,4 @@ class DynamicLookaheadSwap(TransformationPass):
 
                         order = current_layout.reorder_bits(new_dag.qubits)
                         new_dag.compose(swap_layer, qubits=order)
-                else:
-                    print("MCPE cost is empty, cannot add swap gate")
         return new_dag
