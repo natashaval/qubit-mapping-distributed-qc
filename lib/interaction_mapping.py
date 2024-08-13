@@ -109,6 +109,19 @@ class InteractionMapping:
 
     def extract_tuple(self, maps):
         return [t[0] for t in maps], [t[1] for t in maps]
+    
+    def most_frequent_value(self, dicts):
+    # Create a frequency dictionary to count occurrences of each value
+        frequency_dict = {}
+        for value in dicts.values():
+            if value in frequency_dict:
+                frequency_dict[value] += 1
+            else:
+                frequency_dict[value] = 1
+        
+        # Find the value with the maximum occurrence
+        most_frequent = max(frequency_dict, key=frequency_dict.get)
+        return most_frequent, frequency_dict[most_frequent]
 
     def add_mapping(self, pairs, m, max_qpi_value=0):
         new_mappings = []
@@ -131,10 +144,8 @@ class InteractionMapping:
         physical_connectivity = self.calculate_physical_connectivity(self.coupling_map)
 
         # check if fully connected, return corresponding index
-        if all(
-            value == len(self.coupling_map.physical_qubits) - 1
-            for value in physical_connectivity.values()
-        ):
+        frequent_value, count = self.most_frequent_value(physical_connectivity)
+        if count > 0.8 * len(self.coupling_map.physical_qubits):
             self.maps = [[(idx, idx) for idx in range(self.dag.num_qubits())]]
             self.qpi_rank[str(self.maps[0])] = self.coupling_map.physical_qubits
             return self.maps

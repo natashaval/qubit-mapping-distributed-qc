@@ -211,7 +211,7 @@ class DynamicLookaheadSwap(TransformationPass):
                     if (
                         node.name == "measure"
                     ):  # handle measure node to conform with curr_layout
-                        continue # TODO: measure error in mapping qubit to clbits
+                        # continue # TODO: measure error in mapping qubit to clbits
                         node = self.measure_node(node, current_layout, dag.num_clbits())
 
                     # self.dlist[node.qargs[0]._index].pop(0) # because in list_gates_on_dag do not include single-gate

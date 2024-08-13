@@ -148,10 +148,7 @@ class DynamicLookaheadSwap(TransformationPass):
                 else:
                     print(f"gate[{curr_idx}]: {node.name} SINGLE gate")
                     if node.name == 'measure': # TODO: handle measure node to conform with curr_layout
-                        continue
-                        if not is_print_curr_layout:
-                            print(f"- Currentlayout:{current_layout}\npropertylayout: {self.property_set['layout']}\nmeas: {self.meas_register}")
-                            is_print_curr_layout = True
+                        # continue
                         node = self.measure_node(node, current_layout, num_clbits=dag.num_clbits())
                         
                     # self.dlist[node.qargs[0]._index].pop(0)
@@ -160,8 +157,8 @@ class DynamicLookaheadSwap(TransformationPass):
             assigned_swap_list = [] # to avoid recursive swap
             # line 15
             while act_list: # check if act_list is not empty
-                if self.swap_add > 30: # TODO: to be removed
-                    raise Exception("CANNOT FIND SWAP")
+                if self.swap_add > 50: # TODO: to be removed
+                    raise Exception("Swap add timeout.")
                 print(f"@ Swap add {self.swap_add}")
                 self.swap_add += 1
 
