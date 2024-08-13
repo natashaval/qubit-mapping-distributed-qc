@@ -3,7 +3,6 @@ import numpy as np
 from qiskit.transpiler import CouplingMap
 from qiskit.dagcircuit import DAGCircuit
 
-
 class InteractionMapping:
     def __init__(self, coupling_map: CouplingMap, dag: DAGCircuit):
         super().__init__()
@@ -13,8 +12,7 @@ class InteractionMapping:
         self.assigned_qubits = []
         self.assigned_physical_qubits = []
         self.qpi_rank = {}  # dict key = map of tuple(log, phy); value = total_qpi_value
-        self.swap_add = 0  # TODO: to be removed
-
+        self.swap_add = 0 # TODO:
         # run calculation
         self.calculate_final_maps()
 
@@ -98,7 +96,7 @@ class InteractionMapping:
             max_qbn_value = max(qbn.values(), default=0)
             if all(qbn.values()) == 0:
             # check if all QBN value is 0, then choose the first node
-                qbn = {next(iter(qbn)) : 0}
+                qbn = {next(iter(qbn)) : 0} 
             else:
                 qbn = {k: v for k, v in qbn.items() if v == max_qbn_value}
         return qbn, max_qbn_value
@@ -149,7 +147,7 @@ class InteractionMapping:
             self.maps = [[(idx, idx) for idx in range(self.dag.num_qubits())]]
             self.qpi_rank[str(self.maps[0])] = self.coupling_map.physical_qubits
             return self.maps
-
+        
         logical_neighbors = self.calculate_logical_neighbors(self.dag)
         physical_neighbors = self.calculate_physical_neighbors(self.coupling_map)
 
@@ -160,7 +158,10 @@ class InteractionMapping:
         self.maps = [[(high_logical, high_physical)]]
 
         while logical_priority:
+            if self.swap_add > 1000:
+                raise Exception("InteractionLayout timeout.")
             for i in range(len(self.maps)):
+                self.swap_add += 1
                 m = self.maps.pop(0)
                 # get highest value from dictionary, return key
                 curr_qubit = self.highest_index(
