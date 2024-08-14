@@ -143,7 +143,7 @@ class InteractionMapping:
 
         # check if fully connected, return corresponding index
         frequent_value, count = self.most_frequent_value(physical_connectivity)
-        if count > 0.8 * len(self.coupling_map.physical_qubits):
+        if frequent_value > 3 and count > 0.8 * len(self.coupling_map.physical_qubits): # frequency_value > 3 to differentiate between ring(2) and full(n-1) connectivity
             self.maps = [[(idx, idx) for idx in range(self.dag.num_qubits())]]
             self.qpi_rank[str(self.maps[0])] = self.coupling_map.physical_qubits
             return self.maps

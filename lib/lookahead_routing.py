@@ -142,7 +142,7 @@ class DynamicLookaheadSwap(TransformationPass):
             assigned_swap_list = [] # to avoid recursive swap
             # line 15
             while act_list: # check if act_list is not empty
-                if self.swap_add > 50: # TODO: to be removed
+                if self.swap_add > 200: # TODO: to be removed
                     raise Exception("Swap add timeout.")
                 self.swap_add += 1
 
