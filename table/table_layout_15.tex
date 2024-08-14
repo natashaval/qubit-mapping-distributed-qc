@@ -1,4 +1,4 @@
-\begin{longtable}{llrrrrrlrrrl}
+\begin{longtable}{llrrllrlllrl}
 \caption{Additional swap gates and circuit depth, n = 15} \label{benchmark-table-15} \\
 \toprule
 layout & benchmark & g & d & s basic & s sabre & s look & swap (\%) & d basic & d swap & d look & d (\%) \\
@@ -36,6 +36,8 @@ full\_7\_3 & graphstate & 150 & 29 & 36 & 9 & 27 & 200 & 67 & 35 & 32 & -8.57 \\
 full\_7\_3 & vqe & 253 & 31 & 0 & 12 & 0 & -100 & 31 & 56 & 31 & -44.64 \\
 full\_7\_3 & wstate & 253 & 135 & 0 & 12 & 0 & -100 & 135 & 141 & 135 & -4.26 \\
 full\_7\_3 & qaoa & 285 & 34 & 108 & 15 & 51 & 240 & 223 & 50 & 53 & 6 \\
+full\_7\_3 & qft & 591 & 118 & 501 & 117 & 300 & 156.41 & 588 & 295 & 213 & -27.8 \\
+full\_7\_3 & qftentangled & 608 & 122 & 501 & 150 & 300 & 100 & 592 & 399 & 217 & -45.61 \\
 grid\_4\_5 & ghz & 17 & 17 & 12 & 18 & 33 & 83.33 & 29 & 32 & 25 & -21.88 \\
 grid\_4\_5 & dj & 118 & 22 & 324 & 45 & 27 & -40 & 128 & 75 & 38 & -49.33 \\
 grid\_4\_5 & graphstate & 150 & 29 & 147 & 24 & 111 & 362.5 & 94 & 31 & 38 & 22.58 \\

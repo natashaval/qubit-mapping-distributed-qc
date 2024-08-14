@@ -142,11 +142,11 @@ class DynamicLookaheadSwap(TransformationPass):
             # line 15 - 24 initialize first do while with original coupling_map
             for node in subdag.op_nodes():
                 if node.op.num_qubits == 2: # only check for two-qubit gates, cannot exclude >2 gate because there is barrier
-                    print(f"gate[{curr_idx}]: {node.name} TWO-QUBIT gate")
+                    # print(f"gate[{curr_idx}]: {node.name} TWO-QUBIT gate")
                     new_act_list, new_dag = self.check_gate_connectivity([curr_idx], new_dag, current_layout)
                     act_list = act_list + new_act_list
                 else:
-                    print(f"gate[{curr_idx}]: {node.name} SINGLE gate")
+                    # print(f"gate[{curr_idx}]: {node.name} SINGLE gate")
                     if node.name == 'measure': # TODO: handle measure node to conform with curr_layout
                         # continue
                         node = self.measure_node(node, current_layout, num_clbits=dag.num_clbits())
@@ -157,7 +157,7 @@ class DynamicLookaheadSwap(TransformationPass):
             assigned_swap_list = [] # to avoid recursive swap
             # line 15
             while act_list: # check if act_list is not empty
-                if self.swap_add > 50: # TODO: to be removed
+                if self.swap_add > 500: # TODO: to be removed, normal at 50, latest high at 500 qftentangled full_7_3 works
                     raise Exception("Swap add timeout.")
                 print(f"@ Swap add {self.swap_add}")
                 self.swap_add += 1
