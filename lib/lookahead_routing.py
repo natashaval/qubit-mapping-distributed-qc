@@ -13,7 +13,7 @@ class DynamicLookaheadSwap(TransformationPass):
         else:
             self.target = None
             self.coupling_map = coupling_map
-        self.dlist = [] # SAVE as index, instead of DAGOpNode
+        self.dlist = [] # SAVE as index, instead of DAGOpNode; only for two-qubit gates
         self.op_gates = [] # SAVE reference of gate
         self.swap_add = 0
 
