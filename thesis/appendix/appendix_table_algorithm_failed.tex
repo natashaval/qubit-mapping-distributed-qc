@@ -1,0 +1,50 @@
+% \usepackage{multirow}
+% \usepackage{vcell}
+\chapter{Failed Algorithms by Layout and Group} \label{app:failed-algorithm-layout}
+\begin{table}[!htb]
+\centering
+\caption{Failed algorithms grouped by circuit size, showing the layout where timeouts occurred}
+\label{tab:table-algorithm-failed}
+\begin{tabular}{|l|l|l|l|l|} 
+\hline
+\multicolumn{1}{|c|}{\multirow{2}{*}{\textbf{Algorithms}}} & \multicolumn{2}{c|}{\vcell{\textbf{n = 10}}}                                                                          & \multicolumn{2}{c|}{\vcell{\textbf{n = 15}}}                                                                                       \\[-\rowheight]
+\multicolumn{1}{|c|}{}                                     & \multicolumn{2}{c|}{\printcelltop}                                                                                    & \multicolumn{2}{c|}{\printcelltop}                                                                                                 \\ 
+\cline{2-5}
+\multicolumn{1}{|c|}{}                                     & \multicolumn{1}{c|}{\vcell{mapping timeout}} & \multicolumn{1}{c|}{\vcell{swap timeout}}                              & \multicolumn{1}{c|}{\vcell{mapping timeout}} & \multicolumn{1}{c|}{\vcell{swap timeout}}                                           \\[-\rowheight]
+\multicolumn{1}{|c|}{}                                     & \multicolumn{1}{c|}{\printcelltop}           & \multicolumn{1}{c|}{\printcelltop}                                     & \multicolumn{1}{c|}{\printcelltop}           & \multicolumn{1}{c|}{\printcelltop}                                                  \\ 
+\hline
+\vcell{ghz}                                                & \vcell{}                                     & \vcell{}                                                               & \vcell{full\_5\_4}                           & \vcell{}                                                                            \\[-\rowheight]
+\printcelltop                                              & \printcelltop                                & \printcelltop                                                          & \printcelltop                                & \printcelltop                                                                       \\ 
+\hline
+\vcell{qft}                                                & \vcell{}                                     & \vcell{\begin{tabular}[b]{@{}l@{}}ring\_7\_3\\ring\_5\_4\end{tabular}} & \vcell{full\_5\_4}                           & \vcell{}                                                                            \\[-\rowheight]
+\printcelltop                                              & \printcelltop                                & \printcelltop                                                          & \printcelltop                                & \printcelltop                                                                       \\ 
+\hline
+\vcell{wstate}                                             & \vcell{}                                     & \vcell{}                                                               & \vcell{full\_5\_4}                           & \vcell{}                                                                            \\[-\rowheight]
+\printcelltop                                              & \printcelltop                                & \printcelltop                                                          & \printcelltop                                & \printcelltop                                                                       \\ 
+\hline
+\vcell{qftentangled}                                       & \vcell{}                                     & \vcell{ring\_7\_3}                                                     & \vcell{full\_5\_4}                           & \vcell{\begin{tabular}[b]{@{}l@{}}ring\_7\_3\\ring\_5\_4\end{tabular}}              \\[-\rowheight]
+\printcelltop                                              & \printcelltop                                & \printcelltop                                                          & \printcelltop                                & \printcelltop                                                                       \\ 
+\hline
+\vcell{vqe}                                                & \vcell{}                                     & \vcell{\begin{tabular}[b]{@{}l@{}}ring\_7\_3\\ring\_5\_4\end{tabular}} & \vcell{full\_5\_4}                           & \vcell{}                                                                            \\[-\rowheight]
+\printcelltop                                              & \printcelltop                                & \printcelltop                                                          & \printcelltop                                & \printcelltop                                                                       \\ 
+\hline
+\vcell{twolocalrandom}                                     & \vcell{}                                     & \vcell{ring\_5\_4}                                                     & \vcell{full\_5\_4}                           & \vcell{\begin{tabular}[b]{@{}l@{}}full\_7\_3\\ring\_5\_4\end{tabular}}              \\[-\rowheight]
+\printcelltop                                              & \printcelltop                                & \printcelltop                                                          & \printcelltop                                & \printcelltop                                                                       \\ 
+\hline
+\vcell{su2random}                                          & \vcell{}                                     & \vcell{ring\_5\_4}                                                     & \vcell{full\_5\_4}                           & \vcell{\begin{tabular}[b]{@{}l@{}}full\_7\_3\\ring\_5\_4\end{tabular}}              \\[-\rowheight]
+\printcelltop                                              & \printcelltop                                & \printcelltop                                                          & \printcelltop                                & \printcelltop                                                                       \\ 
+\hline
+\vcell{qnn}                                                & \vcell{}                                     & \vcell{\begin{tabular}[b]{@{}l@{}}ring\_7\_3\\ring\_5\_4\end{tabular}} & \vcell{full\_5\_4}                           & \vcell{\begin{tabular}[b]{@{}l@{}}full\_7\_3\\ring\_7\_3\\ring\_5\_4\end{tabular}}  \\[-\rowheight]
+\printcelltop                                              & \printcelltop                                & \printcelltop                                                          & \printcelltop                                & \printcelltop                                                                       \\ 
+\hline
+\vcell{portfolioqaoa}                                      & \vcell{}                                     & \vcell{\begin{tabular}[b]{@{}l@{}}ring\_7\_3\\ring\_5\_4\end{tabular}} & \vcell{full\_5\_4}                           & \vcell{\begin{tabular}[b]{@{}l@{}}full\_7\_3\\ring\_7\_3\\ring\_5\_4\end{tabular}}  \\[-\rowheight]
+\printcelltop                                              & \printcelltop                                & \printcelltop                                                          & \printcelltop                                & \printcelltop                                                                       \\ 
+\hline
+\vcell{random}                                             & \vcell{}                                     & \vcell{\begin{tabular}[b]{@{}l@{}}ring\_7\_3\\ring\_5\_4\end{tabular}} & \vcell{full\_5\_4}                           & \vcell{\begin{tabular}[b]{@{}l@{}}full\_7\_3\\ring\_7\_3\\ring\_5\_4\end{tabular}}  \\[-\rowheight]
+\printcelltop                                              & \printcelltop                                & \printcelltop                                                          & \printcelltop                                & \printcelltop                                                                       \\ 
+\hline
+\vcell{portfoliovqe}                                       & \vcell{}                                     & \vcell{\begin{tabular}[b]{@{}l@{}}ring\_7\_3\\ring\_5\_4\end{tabular}} & \vcell{full\_5\_4}                           & \vcell{\begin{tabular}[b]{@{}l@{}}full\_7\_3\\ring\_7\_3\\ring\_5\_4\end{tabular}}  \\[-\rowheight]
+\printcelltop                                              & \printcelltop                                & \printcelltop                                                          & \printcelltop                                & \printcelltop                                                                       \\
+\hline
+\end{tabular}
+\end{table}

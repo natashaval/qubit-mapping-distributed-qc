@@ -1,0 +1,6 @@
+\chapter{Conclusion} \label{Chap6} % done CHAT
+% Clearly state the answer to the main research question
+%Summarise and reflect on the research
+%Make recommendations for future work on the topic
+%Show what new knowledge you have contributed
+To address the connectivity constraints between logical and physical qubits, two algorithms were introduced: interaction mapping layout and lookahead swap routing. Although the \lstinline{LookaheadSwap} method generates slightly more additional swap gates compared to the \lstinline{SabreSwap} method, it excels in minimizing circuit depth, achieving the lowest circuit depth among the three strategies. In testing various layouts and groups, \textit{full} and \textit{grid} layouts demonstrated superior performance in distributed settings, offering better connectivity due to shorter paths between nodes and more even load distribution. Additionally, organizing qubits in fewer groups is generally preferable, as it simplifies information exchange leading to fewer additional swap gates and more direct operation of quantum gates within the groups, leading to a lower circuit depth. Overall, choosing layouts with higher connectivity and fewer groups can enhance circuit execution efficiency and performance on quantum hardware, making these approaches particularly well-suited for networked quantum architectures.

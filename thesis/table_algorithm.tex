@@ -1,0 +1,42 @@
+\begin{table}[htb]
+\centering
+\caption{Circuit size and circuit depth of benchmark algorithms for 5, 10, and 15 qubits}
+\label{tab:table-algorithm-size-depth}
+\begin{tabular}{|l|c|c|c|c|c|c|} 
+\hline
+\multicolumn{1}{|c|}{\textbf{Algorithm}} & \multicolumn{2}{c|}{\textbf{n = 5}} & \multicolumn{2}{c|}{\textbf{n = 10}} & \multicolumn{2}{c|}{\textbf{n = 15}}  \\ 
+\hline
+\multicolumn{1}{|c|}{\textbf{}}          & gate & depth                        & gate & depth                         & gate & depth                          \\ 
+\hline
+ghz                                      & 7    & 7                            & 12   & 12                            & 17   & 17                             \\ 
+\hline
+dj                                       & 36   & 11                           & 79   & 17                            & 118  & 22                             \\ 
+\hline
+graphstate                               & 50   & 22                           & 100  & 26                            & 150  & 29                             \\ 
+\hline
+qft                                      & 71   & 38                           & 270  & 78                            & 591  & 118                            \\ 
+\hline
+wstate                                   & 73   & 45                           & 163  & 90                            & 253  & 135                            \\ 
+\hline
+qftentangled                             & 78   & 42                           & 282  & 82                            & 608  & 122                            \\ 
+\hline
+vqe                                      & 83   & 21                           & 168  & 26                            & 253  & 31                             \\ 
+\hline
+qaoa                                     & 95   & 31                           & 190  & 34                            & 285  & 34                             \\ 
+\hline
+realamprandom                            & 130  & 37                           & 335  & 57                            & 615  & 77                             \\ 
+\hline
+twolocalrandom                           & 130  & 37                           & 335  & 57                            & 615  & 77                             \\ 
+\hline
+su2random                                & 150  & 41                           & 375  & 61                            & 675  & 81                             \\ 
+\hline
+qnn                                      & 154  & 58                           & 459  & 108                           & 914  & 158                            \\ 
+\hline
+portfolioqaoa                            & 195  & 72                           & 615  & 132                           & 1260 & 192                            \\ 
+\hline
+random                                   & 223  & 97                           & 646  & 155                           & 1992 & 412                            \\ 
+\hline
+portfoliovqe                             & 310  & 107                          & 1145 & 217                           & 2505 & 327                            \\
+\hline
+\end{tabular}
+\end{table}

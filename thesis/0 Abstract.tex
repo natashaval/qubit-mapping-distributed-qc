@@ -1,0 +1,15 @@
+%1.Talks about general application or general field of research
+%2. Explains the challenge that is not answered yet
+%3. Describe idea for tackling that challenge e.g. overall idea
+%4 Methodology undertaken in research  e.g. tools, methods, steps taken.
+%5. Main achievement of research supported by numerical results
+%6. comparison with similar research in literature (qualitatively or quantitatively), and/or explain possible future applications of outcomes
+\begin{abstract}
+This project focuses on simulating qubit placement on physical devices and incorporating swap gates to address connectivity constraints in networked quantum computers. A key challenge in transpilation is the NP-hard problem of mapping logical qubits to physical qubits, particularly given the limited connectivity of physical qubits. This problem requires strategies for initial qubit placement and the insertion of swap gates when connectivity constraints are violated. The proposed approach utilizes physical qubit connectivity and gate priorities to generate an efficient initial mapping, followed by a dynamic lookahead window to insert swap gates more effectively. Although the Lookahead Swap method introduces slightly more swap gates than the default optimized Swap method, it significantly reduces circuit depth, making it very effective for noisy quantum hardware. In distributed quantum computing settings, layouts with higher connectivity perform better because of shorter distance between nodes, and organizing qubits into fewer groups further improves efficiency by simplifying information exchange and reducing circuit depth. This approach is particularly beneficial for networked quantum computers.
+\\
+\\
+\\
+\\
+% \vspace{10pt}
+\keywords{quantum computing - quantum circuit mapping - networked quantum computers}
+\end{abstract}

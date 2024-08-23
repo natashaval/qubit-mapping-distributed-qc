@@ -1,0 +1,23 @@
+% \usepackage{multirow}
+\begin{table}[htb]
+\centering
+\caption{Average Gate Overhead and Depth Overhead}
+\label{tab:table-average-overhead}
+\begin{tabular}{|c|c|c|c|c|} 
+\hline
+\multirow{2}{*}{Group} & \multicolumn{2}{c|}{swap overhead}    & \multicolumn{2}{c|}{depth overhead}    \\ 
+\cline{2-5}
+                       & lookahead - basic & lookahead - sabre & lookahead - basic & lookahead - sabre  \\ 
+\hline
+Group 1                & 0.00              & 0.00              & 0.00              & 0.00               \\ 
+\hline
+Group 2                & 49.84             & -175.09           & 56.53             & 27.97              \\ 
+\hline
+Group 3                & 47.03             & -120.18           & 53.66             & 28.71              \\ 
+\hline
+Group 4                & 54.22             & -164.25           & 59.28             & 24.59              \\ 
+\hline
+Group 20               & 67.68             & -35.08            & 60.94             & 31.80              \\
+\hline
+\end{tabular}
+\end{table}

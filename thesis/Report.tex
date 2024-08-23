@@ -1,0 +1,194 @@
+% Author: Joseph Rowell
+% Version: 3.0
+% This work is licensed under a Creative Commons Attribution 4.0 International License.
+\documentclass[12pt, a4paper]{report}
+% \usepackage[a4paper, total={6.25in, 8.25in}]{geometry} %%%%%% CHECK MARGIN REQ. 8.25 in?
+\usepackage[a4paper, margin=1in]{geometry}
+\input{Packages.tex}
+\usepackage{multicol}
+
+% References
+\usepackage[
+backend=biber,
+style=ieee,
+% sorting=ynt
+]{biblatex}
+\addbibresource{references.bib}
+
+\hypersetup{pdftitle = Project Report, pdfauthor = {First Last}, pdfstartview=FitH, pdfkeywords = essay, pdfpagemode = FullScreen, colorlinks, anchorcolor = black, citecolor = blue, urlcolor = blue, filecolor = green, linkcolor = blue, plainpages = false}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+\rhead{}
+\chead{}
+\lhead{University College London}
+\lfoot{\date{}}
+\cfoot{}
+\rfoot{\thepage}
+% Top and Bottom Line Rules
+\renewcommand{\headrulewidth}{0.4pt} %0.4pt
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyheadoffset{8pt}
+\fancyfootoffset{8pt}
+% Line spacing
+\renewcommand{\baselinestretch}{1.5} %1.5
+
+% \includeonly{2 Introduction and Background}
+% \includeonly{3 Methodology, 5 Discussion}
+% \includeonly{0 Abstract, 4 Results and Analysis, 5 Discussion, 6 Conclusion, 7 Appendix}
+
+\input{Glossary}
+
+% \date{August 2024}
+\date{}
+
+\title{Dynamic Circuit Mapping Algorithms for Networked Quantum Computers}
+\author{\\ \large{Natasha Valentina Santoso}
+\\ \small{23223788}
+\\ Supervisors:
+\\ Abhishek Agarwal (NPL), Lachlan Lindoy (NPL)
+\\ 
+\\
+\\
+A project report presented in partial fulfillment of the degree \\ \textit{MSc Quantum Technologies}
+\\
+\\
+\\
+\\ Department of Physics and Astronomy
+\\ University College London
+\\ August 2024
+% \\Disclaimer:This report is submitted as part requirement for the MSc in Robotics  and Computation at University College London. It is substantially the result of my own work except where explicitly indicated in the text.The report may be freely copied and distributed provided the source is explicitly acknowledged.
+% September 2022
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+%Adjust logo positions here
+% \AddToShipoutPicture*{\parbox[t][\paperheight][t]{\paperwidth}{%
+%           \includegraphics[width=\paperwidth]{\BackgroundPicturea{Logos/ucl_long%_logo.png}{3in}{3in}}
+%           }}
+% \AddToShipoutPicture*{\centering\BackgroundPictureb{Logos/Bentham2011_065_c623d.jpg}{3in}{3.7in}}
+\AddToShipoutPictureBG*{%
+  \AtPageUpperLeft{%
+    \raisebox{-\height}{%
+      \includegraphics[width=\paperwidth]{Logos/UCL page header.png}%
+    }}
+}
+\AddToShipoutPicture*{%
+      \parbox[t][\paperheight][t]{\paperwidth}{%
+          \includegraphics[width=1.2\paperwidth]{Logos/UCL page footer.png}
+      }}
+      
+
+\thispagestyle{headings}
+\maketitle
+\FloatBarrier
+\pagenumbering{roman}
+
+\thispagestyle{empty}
+% \begin{abstract}
+\include{0 Abstract}
+
+% \newpage
+% \thispagestyle{empty}
+% \begin{center}
+% I dedicate this ...
+% \end{center}
+
+% \newpage
+% \thispagestyle{empty}
+% \vspace*{\fill}
+% \begin{center}
+% Copyright \copyright  \thinspace 2022 by Joseph Rowell \\ All Rights Reserved
+% \end{center}
+% \vspace*{\fill}
+% \newpage
+% \thispagestyle{empty}
+%\epigraph{The Book of Nature is written in the language of mathematics.}{--- \textup{Galileo Galilei}}
+% \epigraph{The computer was born to solve problems that did not exist before.}{--- \textup{Bill Gates}}
+
+
+\thispagestyle{empty}
+\include{0a Acknowledgements}
+
+
+\thispagestyle{empty}
+\chapter*{Declaration}
+I, Natasha Valentina Santoso, declare that the thesis has been composed by myself and that the work has not be submitted for any other degree or professional qualification. I confirm that the work submitted is my own. The report may be freely copied and distributed provided the source is explicitly acknowledged. \\
+%Add signature png here.
+\begin{figure}[H]
+\includegraphics[width=0.3\linewidth]{Logos/signature.PNG}
+\end{figure}
+\vspace{-1em}
+\noindent\begin{tabular}{ll}
+Natasha Valentina Santoso & 22 August 2024 \\
+\makebox[2.5in]{\hrulefill} & \makebox[2.5in]{\hrulefill}\\
+\textit{Signature} & \textit{Date}\\
+\end{tabular}
+
+
+
+\tableofcontents
+
+\thispagestyle{plain}
+% \listoffigures
+\listoftables
+\listofalgorithms
+
+% \printglossary[type=\acronymtype]
+\printnoidxglossary[type=\acronymtype,title=Acronyms]
+
+%\begin{singlespace}
+% \chapter*{List of Abbreviations}
+% \begin{sortedlist} %sort alphabetically
+%   \sortitem{CNN:     Convolutional Neural Network}
+%   \sortitem{DCNN:    Deep Convolutional Neural Network}
+%   \sortitem{SLAM:    Simultaneous Localization And Mapping}   \sortitem{GNSS:    Global Navigation Satellite System}
+%   \sortitem{vSLAM:   visual Simultaneous Localisation and Mapping}
+%   \sortitem{MAP:     Maximum a Posteriori}
+%   \sortitem{ML:      Maximum Likelihood}
+%   \sortitem{BA:      Bundle Adjustment}
+%   \sortitem{TRC:     TPU Research Cloud}
+%   \sortitem{TPU:     Tensor Processing Unit}
+%   \sortitem{SfM:     Structure from Motion}
+%   \sortitem{MVS:     Multi-view Stereo}
+%   \sortitem{SIFT:    Scale Invariant Feature Transform}
+%   \sortitem{SURF:    Speeded-Up Robust Features}
+%   \sortitem{ORB:     Oriented FAST Rotated BRIEF}
+%   \sortitem{FAST:    Features from Accelerated Segment Test}
+%   \sortitem{BRIEF:   Binary Robust Independent Elementary Features}
+%   \end{sortedlist}
+% \end{singlespace}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \include{1 Project Plan}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \pagenumbering{arabic}
+\include{2 Introduction and Background}
+% \pagenumbering{arabic}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{3 Methodology}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{4 Results and Analysis}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{5 Discussion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{6 Conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\bibname}{References}
+\printbibliography % BibLatex newer!
+
+% BibTex
+% \bibliographystyle{ieeetr}
+% \bibliography{references.bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDIX
+\begin{appendices}
+\include{7 Appendix}
+\end{appendices}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% GLOSSARY
+\clearpage
+\printglossary
+
+% INDEX?
+
+\end{document}
