@@ -1,7 +1,7 @@
 \chapter{Results and Analysis} \label{Chap4}
 \section{Configurations} % done chat, turnitin
 The evaluation is configured as follows:
-\begin{enumerate}[nolistsep]
+\begin{enumerate}[noitemsep,nolistsep]
     \item Metrics: The evaluation focuses on two main metrics, the total number of additional swap gates $(g)$ and the resulting circuit depth $(d)$ after transpilation.
     \item Experiment Software: The algorithm is implemented in Python version 3.10.12 with IBM Qiskit framework. The code is available on Github \url{https://github.com/natashaval/qubit-mapping-distributed-qc}.
     \item Experiment Hardware: The tests were conducted on a standard personal computer equipped with an Intel i7-8700 CPU and 16 GB of RAM.
@@ -74,7 +74,7 @@ While most algorithms perform reliably across all benchmarks, a few show inconsi
 \subsection{Layouts for Algorithms}
 In this section, a selection of representative algorithms - GHZ, Deutsch-Jozsa, Graph State, VQE, and Portfolio QAOA - are analyzed and compared across various layouts. The baseline values for the total circuit gates and circuit depth are provided in parentheses, and the results discussed are based on using 15 qubits. This comparison highlights how different layouts perform when subjected to different swap routing methods.
 
-\subsection{GHZ} % done chat
+\subsubsection{GHZ} % done chat
 The GHZ charts compare the number of additional swap gates needed for different layouts (Figure \ref{fig:chart-ghz}) and the resulting circuit depth (Figure \ref{fig:chart-ghz-depth}) when running with 17 qubits. It shows that the \lstinline{BasicSwap} strategy generally performs best, requiring the fewest swaps, particularly in all full, ring, and line layouts, where it results in 0 additional swap gates. In this context, \lstinline{SabreSwap} tend to perform worse than \lstinline{BasicSwap}, while the \lstinline{LookaheadSwap} strategy performs significantly worse than the others, with a notable spike in the \textit{ring\_10\_2} layout. Regarding circuit depth, the results for \lstinline{LookaheadSwap} are nearly comparable to those of \lstinline{SabreSwap}, with both strategies yielding a circuit depth of approximately 30.
 \begin{figure}[htb]
     \centering
@@ -90,7 +90,7 @@ The GHZ charts compare the number of additional swap gates needed for different 
     \end{subfigure}
 \end{figure}
 
-\subsection{Deutsch-Jozsa} % done chat
+\subsubsection{Deutsch-Jozsa} % done chat
 The charts for running the Deutsch-Jozsa algorithm with 118 gates (Figure \ref{fig:chart-dj}) and a circuit depth of 22 (Figure \ref{fig:chart-dj-depth}) show that the \lstinline{SabreSwap} and \lstinline{LookaheadSwap} strategies consistently outperform the \lstinline{BasicSwap} strategy in minimizing swap gates. The \textit{line\_20\_1} layout performs poorly, with the \lstinline{BasicSwap} method leading to an extremely high number of additional swap gates, exceeding 500. Although the additional swap gates for \lstinline{SabreSwap} and \lstinline{LookaheadSwap} are similar across all layouts, remaining below 50, the circuit depth with \lstinline{LookaheadSwap} is significantly lower, staying under 40 for all layouts, compared to \lstinline{SabreSwap}, which is around 60.
 \begin{figure}[htb]
     \centering
@@ -106,7 +106,7 @@ The charts for running the Deutsch-Jozsa algorithm with 118 gates (Figure \ref{f
     \end{subfigure}
 \end{figure}
 
-\subsection{Graph State} % done chat
+\subsubsection{Graph State} % done chat
 The Graph State charts compare additional swap gates with an initial count of 150 gates (Figure \ref{fig:chart-graphstate}) and a circuit depth of 30 (Figure \ref{fig:chart-graphstate-depth}) across different layouts. In this algorithm, the performance of \lstinline{LookaheadSwap} is similar to \lstinline{BasicSwap}, with the poorest performance observed in the \textit{t\_vertical\_5\_4} layout, which requires 120 additional swap gates. The \lstinline{SabreSwap} strategy, on the other hand, results in significantly fewer swap gates, with counts around 20. Despite the difference in additional swap gates between \lstinline{SabreSwap} and \lstinline{LookaheadSwap} being as much as 200\%, the resulting circuit depth is almost comparable, ranging from 30 to 40 across all layouts.
 \begin{figure}[htb]
     \centering
@@ -122,7 +122,7 @@ The Graph State charts compare additional swap gates with an initial count of 15
     \end{subfigure}
 \end{figure}
 
-\subsection{VQE}
+\subsubsection{VQE}
 The chart illustrates that for the VQE algorithm with 253 gates (Figure \ref{fig:chart-vqe}), the \lstinline{SabreSwap} strategy generally performs best across most layouts, particularly in \textit{grid\_8\_3}, \textit{grid\_6\_4} and \textit{t\_horizontal\_5\_4}, where it minimizes the number of additional swap gates. In contrast, the \lstinline{LookaheadSwap} strategy tends to require significantly more swaps, especially in layouts like \textit{ring\_10\_2} and \textit{t\_vertical\_5\_4}. The \lstinline{BasicSwap} strategy shows similar behaviour to \lstinline{LookaheadSwap}, with the exception of the \textit{t\_vertical\_5\_4} layout, where it exceeds 140 additional swap gates. When examining circuit depth (Figure \ref{fig:chart-vqe-depth}), \lstinline{BasicSwap} does not show much difference from the baseline, remaining at 31. Meanwhile, the circuit depth performance of \lstinline{LookaheadSwap} is comparable to that of \lstinline{SabreSwap}, with layouts like \textit{full\_7\_3} and \textit{t\_vertical\_5\_4} delivering significantly better results, with a reduction of nearly 40\%.
 \begin{figure}[htb]
     \centering
@@ -138,7 +138,7 @@ The chart illustrates that for the VQE algorithm with 253 gates (Figure \ref{fig
     \end{subfigure}
 \end{figure}
 
-\subsection{Portfolio QAOA}
+\subsubsection{Portfolio QAOA}
 These final charts serve as representatives for various other algorithms listed in Table \ref{tab:table-algorithm-size-depth}, ranging from "qft" to "portfoliovqe". The charts compare the performance of swap strategies for the Portfolio QAOA algorithm with 1260 gates (Figure \ref{fig:chart-portfolioqaoa}) and a circuit depth of 192 (Figure \ref{fig:chart-portfolioqaoa-depth}). The \lstinline{BasicSwap} strategy performs poorly, especially in layouts like \textit{ring\_10\_2}, \textit{t\_horizontal\_5\_4}, and \textit{line\_1\_20} with swap counts exceeding 5000 in some cases. On the other hand, both \lstinline{SabreSwap} and \lstinline{LookaheadSwap} significantly reduce the number of swap gates across most layouts to just below 2000, with \lstinline{SabreSwap} generally requiring fewer swaps than \lstinline{LookaheadSwap}. The second chart showing circuit depth follows a similar pattern: \lstinline{BasicSwap} results in much deeper circuits, often exceeding 2000 in depth, particularly in the same problematic layouts. \lstinline{SabreSwap} and \lstinline{LookaheadSwap} again perform better, with \lstinline{SabreSwap} consistently achieving lower circuit depths around 700, closely followed by \lstinline{LookaheadSwap} just below 500.
 \begin{figure}[htb]
     \centering

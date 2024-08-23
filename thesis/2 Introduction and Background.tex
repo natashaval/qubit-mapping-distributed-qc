@@ -28,7 +28,7 @@ In the 127-qubit IBM quantum system, \textit{ibm\_kyoto} supports four single-qu
 \section{Quantum Circuit Mapping} % done chat, edited from turnitin not yet checked again
 A quantum circuit compiler translates a logical quantum circuit into instructions that can be directly executed on a real \acrshort{qpu}. The compiler converts high-level programming languages, like Qiskit in Python \cite{aleksandrowicz_qiskit_2019}, into low-level instructions, such as OpenQASM \cite{cross_open_2017}. Quantum algorithms, as defined in quantum circuits, are generally hardware-agnostic and may not account for specific hardware limitations \cite{ash-saki_qure_2019}. To run these algorithms on a quantum processor, they must be adapted through a process called "quantum circuit mapping" (also known as quantum transpiling), which can increase gate count $(g)$ or circuit depth $(d)$, depending on the circuit and hardware constraints. \\
 Figure \ref{fig:tackling-depth-gate-first} presents a 9-qubit device with two CNOT gates: $(q_1, q_2)$ (blue) and $(q_3, q_4)$ (green). The left side shows the original mapping and two different optimization approaches are explained:
-\begin{enumerate}[nolistsep]
+\begin{enumerate}[noitemsep,nolistsep]
     \item \textbf{Depth First}: SWAP $(q_2, q_9)$, $(q_1, q_5)$ can be directly performed to connect CNOT $(q_1, q_2)$, and also SWAP $(q_4, q_8)$, $(q_3, q_7)$ to connect CNOT $(q_3, q_4)$. This method adds 4 SWAPs but only increases circuit depth by 1.
     \item \textbf{Gates First}: SWAP $(q_2, q_9)$ is done first, followed by swaps on $(q_2, q_3)$ and $(q_4, q_8)$. This method only adds 3 SWAPs but increases circuit depth by 2.
 \end{enumerate} 

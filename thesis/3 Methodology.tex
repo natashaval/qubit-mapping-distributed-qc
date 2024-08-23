@@ -11,7 +11,7 @@ Table \ref{tab:definition-notation} provides the definitions for the notations u
 \subsection{Distributed Coupling Graph} % done chat
 Simulating a distributed quantum computer involves creating a coupling map that represents the connectivity of qubits across different "groups", with each group acting as a separate node or quantum processor within the quantum network. These groups consist of multiple \acrfull{qpu}, with connections both within each group and between different groups. The coupling graph defines the topology of the \acrshort{qpu} within each group, and this is managed using \lstinline{CouplingMap} \cite{ibmquantum_couplingmap} class in Qiskit. In this coupling graph, the last qubit of one group is connected to the first qubit of the next group, forming a larger distributed coupling map. By modifying the internal topology of a node (quantum computer) and the distribution of qubits across different groups, various configurations of the quantum network can be explored, as illustrated in Appendix \ref{app:coupling-graph-by-group}. \\
 The following functions are used to define the topology within each group:
-\begin{itemize}[nolistsep]
+\begin{itemize}[noitemsep,nolistsep]
     \item \lstinline{from_line}: creates a coupling map of $n$ qubits connected in a line.
     \item \lstinline{from_grid}: creates a coupling map of qubits arranged in a grid with a specified number of rows and columns.
     \item \lstinline{from_ring}: creates a coupling map of $n$ qubits connected in a ring.
@@ -29,7 +29,7 @@ In this section, an algorithm called \mycode{InteractionLayoutMapping} will be d
 A physical quantum device is represented by a coupling graph, which is a directed graph (V, E). In this graph, $Q = \{Q_0, Q_1, ..., Q_{N-1}\}$ represents the set of physical qubits as vertices (V), and the edges (E) represent the direct connections between two physical qubits, $Q_i$ and $Q_j$, where a two-qubit gate can be applied. When a physical qubit has higher connectivity, the logical qubit mapped to it has a greater chance of connecting to other logical qubits without needing additional swap gates. Conversely, if a physical qubit has low connectivity, more qubit movements will be needed to satisfy the coupling constraints before a logical gate can be operated. These additional movements increase the need for swap gate insertions, leading to a larger circuit size and depth, which may negatively impact gate fidelity and runtime. For example, Qiskit \lstinline{FakeLondonV2} \cite{ibmquantum_fakelondonv2} (Figure \ref{fig:fake-london})  is a simulated 5-qubit backend with a coupling graph that illustrates the physical connectivity on each qubit.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\linewidth]{image/fake_london.png}
+    \includegraphics[width=0.4\linewidth]{image/fake_london.png}
     \caption{\lstinline{FakeLondonV2} coupling map and its physical connectivity list containing the number of neighbours of each physical qubit $Q_P$.}
     \label{fig:fake-london}
 \end{figure}
@@ -60,7 +60,6 @@ where $m$ is the total number of gates in the quantum circuit, and $i$ is the ga
     \caption{Gate weight of a quantum circuit, with front gates assigned higher weights}
     \label{fig:gate-weight}
 \end{figure}
-
 \begin{definition}
     \acrfull{qpi} refers to the measure of interaction logical qubit pair (q\textsubscript{i}, q\textsubscript{j}) when they are involved in a multi-qubit quantum gate, such as controlled-NOT (CNOT) gate or any other two-qubit gate.
 \end{definition}
@@ -81,7 +80,6 @@ where $\mathcal{G}(q_i, q_j)$ represents the set of indices $k$ corresponding to
     \caption{\acrshort{qpi} value of gates on logical qubits $(q_i, q_j)$ from quantum circuit on Figure \ref{fig:gate-weight}.}
     \label{tab:qpi-matrix}
 \end{table}
-
 \begin{definition}
     \acrfull{qbn} refers to the sum of weights of the qubit pairs interactions (\acrshort{qpi} values) that involve the logical qubit being considered and its neighbouring physical qubits.
 \end{definition}
@@ -342,18 +340,4 @@ For instance, the initial circuit shown in Figure \ref{fig:circuit-init} has a c
 
 \subsection{Verification} % done chat, turnitin
 The verification process involves retrieving the results of a quantum computation after a job has been executed on a quantum device or simulator. For this work, \lstinline{GenericBackend2} \cite{ibmquantum_genericbackendv2} is used, and the backend is run without noise. The result is returned as a dictionary, where the keys represent the bitstrings of the measured qubits, and the values represent the number of times each bitstring was measured. This output allows for the analysis of the probability distribution of the qubit states after the quantum circuit has been executed. \\
-The \lstinline{Result} class \cite{ibmquantum_result} of the transpiled quantum circuit, run on Qiskit's preset pass manager, is then compared with the result obtained from the algorithm's swap implementation. It is observed that several of the highest occurrences are identical in both cases (Figure \ref{fig:plot-basic} and Figure \ref{fig:plot-lookahead}), indicating consistency between the two methods.
-\begin{figure}[htb]
-    \centering
-    \begin{subfigure}{0.45\linewidth}
-        \includegraphics[width=\linewidth]{image/plot_basic.png}
-        \caption{Result counts from \lstinline{BasicSwap} method}
-        \label{fig:plot-basic}
-    \end{subfigure}
-    \begin{subfigure}{0.45\linewidth}
-        \includegraphics[width=\linewidth]{image/plot_lookahead.png}
-        \caption{Result counts of \lstinline{Lookahead}}
-        \label{fig:plot-lookahead}
-        \end{subfigure}
-    \caption{Result counts from running \lstinline{FakeLondonV2} backend. The counts vary due to being drawn from probability distributions, with the highest occurrences being compared.}
-\end{figure}
+The \lstinline{Result} class \cite{ibmquantum_result} of the transpiled quantum circuit, run on Qiskit's preset pass manager, is then compared with the result obtained from the algorithm's swap implementation. It is observed that several of the highest occurrences are identical in both cases (Figure \ref{fig:plot-basic} and Figure \ref{fig:plot-lookahead}), indicating consistency between the two methods, as shown in Appendix \ref{app:verification-probability}.
