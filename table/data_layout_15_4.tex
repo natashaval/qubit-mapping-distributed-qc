@@ -1,0 +1,63 @@
+\begin{longtable}{llrrrrlllrrlll}
+\caption{Additional swap gates and circuit depth, n = 15} \label{benchmark-table-15} \\
+\toprule
+layout & benchmark & g & d & $s_B$ & $s_S$ & $s_L$ & $\Delta s_B$ & $\Delta s_S$ & $d_B$ & $d_S$ & $d_L$ & $\Delta d_B$ & $\Delta d_S$ \\
+\midrule
+\endfirsthead
+\caption[]{Additional swap gates and circuit depth, n = 15} \\
+\toprule
+layout & benchmark & g & d & $s_B$ & $s_S$ & $s_L$ & $\Delta s_B$ & $\Delta s_S$ & $d_B$ & $d_S$ & $d_L$ & $\Delta d_B$ & $\Delta d_S$ \\
+\midrule
+\endhead
+\midrule
+\multicolumn{14}{r}{Continued on next page} \\
+\midrule
+\endfoot
+\bottomrule
+\endlastfoot
+full\_5\_4 & ghz & 17 & 17 & 0 & 18 & nan & nan & nan & 17 & 32 & nan & nan & nan \\
+full\_5\_4 & dj & 118 & 22 & 114 & 27 & 9 & 92.11 & 66.67 & 101 & 61 & 32 & 68.32 & 47.54 \\
+full\_5\_4 & graphstate & 150 & 30 & 63 & 12 & 36 & 42.86 & -200 & 73 & 36 & 38 & 47.95 & -5.56 \\
+full\_5\_4 & vqe & 253 & 31 & 0 & 15 & nan & nan & nan & 31 & 50 & nan & nan & nan \\
+full\_5\_4 & wstate & 253 & 135 & 0 & 15 & nan & nan & nan & 135 & 141 & nan & nan & nan \\
+full\_5\_4 & qaoa & 285 & 34 & 135 & 21 & 63 & 53.33 & -200 & 242 & 51 & 55 & 77.27 & -7.84 \\
+full\_5\_4 & qft & 591 & 118 & 735 & 162 & nan & nan & nan & 638 & 316 & nan & nan & nan \\
+full\_5\_4 & qftentangled & 608 & 122 & 735 & 195 & nan & nan & nan & 642 & 382 & nan & nan & nan \\
+full\_5\_4 & realamprandom & 615 & 77 & 2385 & 600 & nan & nan & nan & 1683 & 499 & nan & nan & nan \\
+full\_5\_4 & twolocalrandom & 615 & 77 & 2385 & 579 & nan & nan & nan & 1683 & 455 & nan & nan & nan \\
+full\_5\_4 & su2random & 675 & 81 & 2385 & 654 & nan & nan & nan & 1717 & 532 & nan & nan & nan \\
+full\_5\_4 & qnn & 914 & 158 & 1548 & 417 & nan & nan & nan & 1268 & 549 & nan & nan & nan \\
+full\_5\_4 & portfolioqaoa & 1260 & 192 & 2385 & 555 & nan & nan & nan & 1922 & 737 & nan & nan & nan \\
+full\_5\_4 & random & 1992 & 412 & 1023 & 711 & nan & nan & nan & 1646 & 1105 & nan & nan & nan \\
+full\_5\_4 & portfoliovqe & 2505 & 327 & 2385 & 624 & nan & nan & nan & 2078 & 1161 & nan & nan & nan \\
+grid\_6\_4 & ghz & 17 & 17 & 15 & 30 & 39 & -160 & -30 & 32 & 44 & 29 & 9.38 & 34.09 \\
+grid\_6\_4 & dj & 118 & 22 & 261 & 36 & 21 & 91.95 & 41.67 & 125 & 77 & 40 & 68 & 48.05 \\
+grid\_6\_4 & graphstate & 150 & 30 & 87 & 24 & 54 & 37.93 & -125 & 88 & 34 & 28 & 68.18 & 17.65 \\
+grid\_6\_4 & vqe & 253 & 31 & 66 & 3 & 54 & 18.18 & -1700 & 80 & 31 & 45 & 43.75 & -45.16 \\
+grid\_6\_4 & wstate & 253 & 135 & 21 & 21 & 39 & -85.71 & -85.71 & 147 & 147 & 99 & 32.65 & 32.65 \\
+grid\_6\_4 & qaoa & 285 & 34 & 300 & 48 & 135 & 55 & -181.25 & 335 & 59 & 58 & 82.69 & 1.69 \\
+grid\_6\_4 & qft & 591 & 118 & 1584 & 303 & 441 & 72.16 & -45.54 & 709 & 310 & 197 & 72.21 & 36.45 \\
+grid\_6\_4 & qftentangled & 608 & 122 & 1425 & 297 & 537 & 62.32 & -80.81 & 705 & 288 & 234 & 66.81 & 18.75 \\
+grid\_6\_4 & realamprandom & 615 & 77 & 4404 & 648 & 711 & 83.86 & -9.72 & 1828 & 442 & 224 & 87.75 & 49.32 \\
+grid\_6\_4 & twolocalrandom & 615 & 77 & 4404 & 645 & 711 & 83.86 & -10.23 & 1828 & 395 & 224 & 87.75 & 43.29 \\
+grid\_6\_4 & su2random & 675 & 81 & 4404 & 618 & 711 & 83.86 & -15.05 & 1869 & 445 & 230 & 87.69 & 48.31 \\
+grid\_6\_4 & qnn & 914 & 158 & 2721 & 450 & 813 & 70.12 & -80.67 & 1368 & 448 & 338 & 75.29 & 24.55 \\
+grid\_6\_4 & portfolioqaoa & 1260 & 192 & 4404 & 597 & 1197 & 72.82 & -100.5 & 2050 & 601 & 430 & 79.02 & 28.45 \\
+grid\_6\_4 & random & 1992 & 412 & 1821 & 924 & 1257 & 30.97 & -36.04 & 1904 & 1056 & 577 & 69.7 & 45.36 \\
+grid\_6\_4 & portfoliovqe & 2505 & 327 & 4404 & 684 & 744 & 83.11 & -8.77 & 2212 & 902 & 429 & 80.61 & 52.44 \\
+ring\_5\_4 & ghz & 17 & 17 & 0 & 18 & 72 & nan & -300 & 17 & 35 & 34 & -100 & 2.86 \\
+ring\_5\_4 & dj & 118 & 22 & 153 & 36 & 30 & 80.39 & 16.67 & 113 & 71 & 32 & 71.68 & 54.93 \\
+ring\_5\_4 & graphstate & 150 & 30 & 93 & 27 & 78 & 16.13 & -188.89 & 92 & 36 & 36 & 60.87 & 0 \\
+ring\_5\_4 & vqe & 253 & 31 & 0 & 18 & nan & nan & nan & 31 & 43 & nan & nan & nan \\
+ring\_5\_4 & wstate & 253 & 135 & 0 & 30 & 123 & nan & -310 & 135 & 150 & 103 & 23.7 & 31.33 \\
+ring\_5\_4 & qaoa & 285 & 34 & 171 & 54 & 102 & 40.35 & -88.89 & 250 & 62 & 48 & 80.8 & 22.58 \\
+ring\_5\_4 & qft & 591 & 118 & 1089 & 309 & nan & nan & nan & 609 & 317 & nan & nan & nan \\
+ring\_5\_4 & qftentangled & 608 & 122 & 1089 & 336 & nan & nan & nan & 613 & 387 & nan & nan & nan \\
+ring\_5\_4 & realamprandom & 615 & 77 & 2934 & 888 & nan & nan & nan & 1623 & 587 & nan & nan & nan \\
+ring\_5\_4 & twolocalrandom & 615 & 77 & 2934 & 777 & nan & nan & nan & 1623 & 495 & nan & nan & nan \\
+ring\_5\_4 & su2random & 675 & 81 & 2934 & 831 & nan & nan & nan & 1661 & 612 & nan & nan & nan \\
+ring\_5\_4 & qnn & 914 & 158 & 2007 & 528 & nan & nan & nan & 1304 & 590 & nan & nan & nan \\
+ring\_5\_4 & portfolioqaoa & 1260 & 192 & 2934 & 765 & nan & nan & nan & 1933 & 786 & nan & nan & nan \\
+ring\_5\_4 & random & 1992 & 412 & 1872 & 927 & nan & nan & nan & 2089 & 1175 & nan & nan & nan \\
+ring\_5\_4 & portfoliovqe & 2505 & 327 & 2934 & 900 & nan & nan & nan & 2162 & 952 & nan & nan & nan \\
+\end{longtable}
