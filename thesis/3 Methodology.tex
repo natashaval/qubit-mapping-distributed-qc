@@ -1,7 +1,7 @@
-\chapter{Methodology} \label{Chap3} % NOT YET TURNITIN, MOSTLY FOUND IN QISKIT DOCUMENTATION AND DYNAMIC LOOKAHEAD
+\chapter{Methodology} \label{Chap3}
 One of the main challenges in transpilation is mapping logical qubits to physical qubits, especially since physical qubits often have limited connectivity. The qubit-mapping problem is classified as NP-hard \cite{botea_complexity_2021}, meaning that while optimal solutions may be achievable for small quantum circuits, the problem becomes increasingly difficult for larger circuits. Because most quantum hardware only allows two-qubit gates to operate between physically adjacent qubits, two important strategies are required: determining the initial placement of qubits and inserting swap gates when a gate execution violates these connectivity constraints \cite{cowtan_qubit_2019}.
 
-The initial step in addressing the qubit-mapping problem involves utilizing the physical qubit connectivity and gate priorities to generate an initial qubit mapping that is more efficient than a simple one-to-one layout. The subsequent step introduces a dynamic lookahead window to insert swap gates more efficiently taking into account gates that give positive effect to the swap candidate. This proposed algorithm successfully addresses the coupling limitations of quantum devices and reduces the overhead of inserting swap gates, leading to better performance on noisy quantum hardware.
+For the overview of the algorithms, the initial step in addressing the qubit-mapping problem involves utilizing the physical qubit connectivity and gate priorities to generate an initial qubit mapping that is more efficient than a simple one-to-one layout. The subsequent step introduces a dynamic lookahead window to insert swap gates more efficiently taking into account gates that give positive effect to the swap candidate. This proposed algorithms successfully address the coupling limitations of quantum devices and reduce the overhead of inserting swap gates, leading to better performance on networked quantum hardware.
 
 Table \ref{tab:definition-notation} provides the definitions for the notations used in the analysis:
 \input{table_notation}
@@ -21,35 +21,35 @@ The following functions are used to define the topology within each group:
 \end{itemize}
 
 \subsection{Interaction Mapping} % done chat
-In this section, an algorithm called \mycode{InteractionLayoutMapping} will be discussed to determine the most appropriate mapping from logical qubits to physical qubits. During the initialization step, the connectivity of the physical qubits on the backend is determined, and the priority of two-qubit gates is assigned based on their order of appearance in the quantum circuit, with gates appearing earlier (on the left side) being given higher priority \cite{liu_qm-dla_2024}. Additionally, a metric is calculated to measure qubit interactions that quantify how qubits interact with each other within a circuit, particularly on how qubits are connected through multi-qubit gates, such as CNOT gates \cite{bandic_interaction_2023}. This calculation will help to define the order in which quantum gates are prioritized. \\
+In this section, an algorithm called \mycode{InteractionLayoutMapping} will be discussed to determine the most appropriate mapping from logical qubits to physical qubits. During the initialization step, the connectivity of the physical qubits on the backend is determined, and the priority of two-qubit gates is assigned based on their order of appearance in the quantum circuit, with gates appearing earlier (on the left side) being given higher priority \cite{liu_qm-dla_2024}. Additionally, a metric is calculated to measure qubit interactions that quantify how qubits interact with each other within a circuit, particularly on how qubits are connected through multi-qubit gates, such as CNOT gates \cite{bandic_interaction_2023}. This calculation will help to define the order in which quantum gates are prioritized.
 
 \begin{definition} % done chat
-    Physical Connectivity is the number of neighbours of physical qubits ($Q_P$).
+    Physical connectivity is the number of neighbours of physical qubits ($Q_P$).
 \end{definition}
 A physical quantum device is represented by a coupling graph, which is a directed graph (V, E). In this graph, $Q = \{Q_0, Q_1, ..., Q_{N-1}\}$ represents the set of physical qubits as vertices (V), and the edges (E) represent the direct connections between two physical qubits, $Q_i$ and $Q_j$, where a two-qubit gate can be applied. When a physical qubit has higher connectivity, the logical qubit mapped to it has a greater chance of connecting to other logical qubits without needing additional swap gates. Conversely, if a physical qubit has low connectivity, more qubit movements will be needed to satisfy the coupling constraints before a logical gate can be operated. These additional movements increase the need for swap gate insertions, leading to a larger circuit size and depth, which may negatively impact gate fidelity and runtime. For example, Qiskit \lstinline{FakeLondonV2} \cite{ibmquantum_fakelondonv2} (Figure \ref{fig:fake-london})  is a simulated 5-qubit backend with a coupling graph that illustrates the physical connectivity on each qubit.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\linewidth]{image/fake_london.png}
-    \caption{Fake London coupling map and its physical connectivity list containing the number of neighbours of each physical qubit $Q_P$}
+    \caption{\lstinline{FakeLondonV2} coupling map and its physical connectivity list containing the number of neighbours of each physical qubit $Q_P$.}
     \label{fig:fake-london}
 \end{figure}
 
 \begin{definition} % done chat
-    Logical Priority calculates the number of two-qubit gates acting on each logical qubit in a quantum circuit.
+    Logical priority calculates the number of two-qubit gates acting on each logical qubit in a quantum circuit.
 \end{definition}
-If two logical qubits have the same priority value, the one with the earlier index is given precedence. The logical neighbors list identifies other logical qubits that interact with a specific logical qubit $q_i$ in the circuit. Figure \ref{fig:logical-priority} lists the number two-qubit gates operating on the wire of the quantum circuit.
+If two logical qubits have the same priority value, the one with the earlier index is given precedence. The logical neighbours list identifies other logical qubits that interact with a specific logical qubit $q_i$ in the circuit. Figure \ref{fig:logical-priority} lists the number two-qubit gates operating on the wire of the quantum circuit.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\linewidth]{image/logical_priority.png}
-    \caption{Logical priority of a quantum circuit and its logical neighbours list containing the indices of qubits that interact with the logical qubit $q_i$}
+    \caption{Logical priority of a quantum circuit and its logical neighbours list containing the indices of qubits that interact with the logical qubit $q_i$.}
     \label{fig:logical-priority}
 \end{figure}
 
 \begin{definition} % done chat
-    Gate Weight reflects the importance of each gate $g$ in a quantum circuit, based on when it occurs in the sequence of operations.
+    Gate weight reflects the importance of each gate $g_i$ in a quantum circuit, based on when it occurs in the sequence of operations.
 \end{definition}
-In a quantum circuit, consider a set of logical qubits $q_L = \{q_0, q_1, ..., q_{n-1}\}$ and an ordered sequence of gates $g = \{g_0, g_1, ..., g_{m-1}\}$. It is important to note that the ordering of gates introduces some arbitrariness, as certain gates can be implemented in parallel. For example, the last two gates in Figure \ref{fig:gate-weight}, $(q_0, q_2)$ and $(q_1, q_3)$, could be executed simulatenously, making the weights of $g_6$ and $g_7$ interchangeable. \\
-Each logical gate $g_i$ is assigned a  weight $w_i$, which is calculated as:
+In a quantum circuit, consider a set of logical qubits $q_L = \{q_0, q_1, ..., q_{n-1}\}$ and an ordered sequence of gates $g = \{g_0, g_1, ..., g_{m-1}\}$. It is important to note that the ordering of gates introduces some arbitrariness, as certain gates can be implemented in parallel. For example, the last two gates in Figure \ref{fig:gate-weight}, CNOT $(q_0, q_2)$ and CNOT $(q_1, q_3)$, could be executed simulatenously, making the weights of $g_6$ and $g_7$ interchangeable. \\
+Each quantum gate $g_i$ is assigned a weight $w_i$, which is calculated as:
 \begin{equation}
     w_i = m - i
 \end{equation}
@@ -57,7 +57,7 @@ where $m$ is the total number of gates in the quantum circuit, and $i$ is the ga
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.4\linewidth]{image/gate_weight.png}
-    \caption{Gate weight of a quantum circuit, with earlier gates assigned higher weights}
+    \caption{Gate weight of a quantum circuit, with front gates assigned higher weights}
     \label{fig:gate-weight}
 \end{figure}
 
@@ -78,7 +78,7 @@ where $\mathcal{G}(q_i, q_j)$ represents the set of indices $k$ corresponding to
         QPI & 5 & 2 & 10 & 1 & 3 \\
         \hline
     \end{tabular}
-    \caption{\acrshort{qpi} value of gates on logical qubits $(q_i, q_j)$}
+    \caption{\acrshort{qpi} value of gates on logical qubits $(q_i, q_j)$ from quantum circuit on Figure \ref{fig:gate-weight}.}
     \label{tab:qpi-matrix}
 \end{table}
 
@@ -91,7 +91,8 @@ A higher \acrshort{qbn} value indicates that the qubit is more connected or play
 \end{equation}
 where $q_i$ is the logical qubit under consideration, $Q_{P,j}$ denotes each physical qubit that is adjacent to or interacts with $q_i$, and $\text{QPI}(q_i, Q_{P,j})$ represents the interaction strength (weight) between $q_i$ and the $j$-th adjacent physical qubit.
 
-Algorithm \ref{alg:interaction-layout-mapping} \mycode{InteractionLayoutMapping} outlines the steps for creating an initial qubit mapping, where the inputs are the device's coupling map and the circuit's \acrfull{dag}, and the output is a layout that maps logical qubits $(q_L)$ to physical qubits $(Q_P)$. The algorithm starts by calculating physical connectivity from the coupling map and determining the logical qubits' priorities, which are sorted in descending order. The logical qubit with the highest priority is then mapped to the physical qubit with the most connections. For subsequent placements, the algorithm checks if the already assigned physical qubits have adjacent neighbours. If they do, it evaluates \acrfull{qpi} between the logical neighbours and their corresponding qubits, selecting the highest QPI candidate for mapping. If no adjacent neighbours meet this criterion, the algorithm assigns the next highest physically connected qubits to the logical qubits. This process generates all possible mappings for the quantum circuit, which are then ranked based on their total QPI index, and the final output is one initial mapping with the highest QPI rank. If multiple mappings have the same top QPI rank, the final output may be different with each iteration.
+\subsection{Interaction Mapping Algorithm}
+Algorithm \ref{alg:interaction-layout-mapping} \mycode{InteractionLayoutMapping} outlines the steps for creating an initial qubit mapping, where the inputs are the device's coupling map and the circuit's \acrfull{dag}, and the output is a layout that maps logical qubits $(q_L)$ to physical qubits $(Q_P)$. The algorithm starts by calculating physical connectivity from the coupling map and determining the logical qubits' priorities, which are sorted in descending order. The logical qubit with the highest priority is then mapped to the physical qubit with the most connections. For subsequent placements, the algorithm checks if the assigned physical qubits have adjacent neighbours. If they do, it evaluates \acrfull{qpi} between the logical neighbours and their corresponding qubits, selecting the highest QPI candidate for mapping. If no adjacent neighbours meet this criterion, the algorithm assigns the next highest physically connected qubits to the logical qubits. This process generates all possible mappings for the quantum circuit, which are then ranked based on their total QPI index, and the final output is one initial mapping with the highest QPI rank. If multiple mappings have the same top QPI rank, the final output may be different with each run.
 
 \begin{algorithm}[htb]
 \caption{Interaction Layout Mapping}\label{alg:interaction-layout-mapping}
@@ -106,14 +107,14 @@ Algorithm \ref{alg:interaction-layout-mapping} \mycode{InteractionLayoutMapping}
 \While{logical priority is not empty}
     \For{maps}
         \State $q_i \gets$ max (logical priority)
-        \State temp physical connectivity $\gets$ neighbor of assigned $Q_X$
-        \If{all $q_L$ neighbor already assigned}
+        \State temp physical connectivity $\gets$ neighbours of assigned $Q_P$
+        \If{all $q_i$ neighbours already assigned}
             \State $Q_X \gets$ max(temp physical connectivity)
             \State maps $\gets (q_i, Q_X)$
         \Else
-            \State $Q_X$ neighbors[\ ] $\gets$ adjacent assigned $Q_P$
+            \State $Q_X$ neighbours[\ ] $\gets$ adjacent assigned $Q_P$
             \State Get all assigned $q_L$ from maps
-            \For{available $Q_X$ neighbors}
+            \For{available $Q_X$ neighbours}
                 \State $q_j \gets \pi^{-1}(\text{available }Q_X)$
                 \State QBN candidate $\gets \text{QPI}[q_i][q_j]$
             \EndFor
@@ -127,7 +128,7 @@ Algorithm \ref{alg:interaction-layout-mapping} \mycode{InteractionLayoutMapping}
 
 \begin{example} % done chat
 The initial quantum circuit shown in Figure \ref{fig:circuit-init} is processed through Algorithm \ref{alg:interaction-layout-mapping} \mycode{InteractionLayoutMapping} to obtain a more efficient solution for qubit placement. The backend device used is a simulated five-qubit system, \lstinline{FakeLondonV2}. \\
-First, logical qubit $q_1$ is directly assigned to $Q_1$, which has the most connections with three neighbours. The current mapping is $[[(1, 1)]]$, where the first value in the tuple represents the logical qubit $(q_L)$ and the second value represents the physical qubit $(Q_P)$. Next, logical qubit $q_2$ is to be assigned to the available physical candidates $Q_3$, $Q_2$, and $Q_0$. The \acrshort{qpi}$(q_1, q_2)$ value is 10 for all these candidates, so they are all included in the mapping. The current mapping is $[[(1, 1), (2, 3)], [(1, 1), (2, 2)], [(1, 1), (2, 0)]]$, and the sum of \acrshort{qbn} is recorded. Figure \ref{fig:circuit-mapping} illustrates the path when physical qubit $Q_3$ is chosen for logical qubit $q_2$. The next logical qubit, $q_0$, has possible physical candidates $Q_0$, $Q_2$, and $Q_4$. Using the mapped logical qubits and their assigned physical qubits, the \acrshort{qpi} values are calculated, and the \acrshort{qbn} values are summed to determine the maximum value. For the neighbour of $Q_1$, the \acrshort{qpi} between $q_0$ and $q_1$ is 5, while for the neighbor of $Q_3$, the \acrshort{qpi} between $q_0$, $q_2$ is 2. The maximum value occurs for both $Q_0$ and $Q_2$. Therefore, the updated mapping for the path $[(1, 1), (2, 3)]$ is $[[(1, 1), (2, 3), (0, 2)], [(1, 1), (2, 3), (0, 0)]]$. With the last mapping of $(q_0, Q_2)$, the last logical qubit is for $q_3$ has available candidates $Q_0$ and $Q_4$. If $q_3$ is assigned to $Q_0$, the \acrshort{qpi} value is 1, while for $Q_4$, the \acrshort{qpi} value is 3. The final assignment is $(q_3, Q_4)$ and \acrshort{qbn} rank is updated accordingly. The algorithm not only generates all possible paths for mapping but also identifies the path with the highest \acrshort{qbn} rank. The chosen layout is $[(1, 1), (2, 3), (0, 0), (3, 4)]$, as shown in Figure \ref{fig:plot-circuit-layout}, with a total rank of $18.0$. The initial quantum circuit is redrawn as in Figure \ref{fig:circuit-layout-isa}
+First, logical qubit $q_1$ is directly assigned to $Q_1$, which has the most connections with three neighbours. The current mapping is $[[\colorbox{backcolour}{(1, 1)}]]$, where the first value in the tuple represents the logical qubit $(q_L)$ and the second value represents the physical qubit $(Q_P)$. Next, logical qubit $q_2$ is to be assigned to the available physical candidates $Q_3$, $Q_2$, and $Q_0$. The \acrshort{qpi}$(q_1, q_2)$ value is 10 for all these candidates, so they are all included in the mapping. The current mapping is $[[(1, 1), \colorbox{backcolour}{(2, 3)}], [(1, 1), (2, 2)], [(1, 1), (2, 0)]]$, and the sum of \acrshort{qbn} is recorded. Figure \ref{fig:circuit-mapping} illustrates the path when physical qubit $Q_3$ is chosen for logical qubit $q_2$. The next logical qubit, $q_0$, has possible physical candidates $Q_0$, $Q_2$, and $Q_4$. Using the mapped logical qubits and their assigned physical qubits, the \acrshort{qpi} values are calculated, and the \acrshort{qbn} values are summed to determine the maximum value. For the neighbour of $Q_1$, the \acrshort{qpi} between $q_0$ and $q_1$ is 5, while for the neighbor of $Q_3$, the \acrshort{qpi} between $q_0$, $q_2$ is 2. The maximum value occurs for both $Q_0$ and $Q_2$. Therefore, the updated mapping for path $[(1, 1), (2, 3)]$ is $[[(1, 1), (2, 3), \colorbox{backcolour}{(0, 2)}], [(1, 1), (2, 3), (0, 0)]]$. With the last mapping of $(q_0, Q_2)$, the last logical qubit is for $q_3$ has available candidates $Q_0$ and $Q_4$. If $q_3$ is assigned to $Q_0$, the \acrshort{qpi} value is 1, while for $Q_4$, the \acrshort{qpi} value is 3. The final assignment is $(q_3, Q_4)$ and \acrshort{qbn} rank is updated accordingly. The algorithm not only generates all possible paths for mapping but also identifies the path with the highest \acrshort{qbn} rank. The chosen layout is $[(1, 1), (2, 3), (0, 0), \colorbox{backcolour}{(3, 4)}]$, as shown in Figure \ref{fig:plot-circuit-layout}, with a total rank of $18.0$. The initial quantum circuit is redrawn as in Figure \ref{fig:circuit-layout-isa}.
 \end{example}
 
 \begin{figure}[htbp]
@@ -170,10 +171,10 @@ When addressing the qubit mapping problem, all two-qubit gates must meet the har
 \begin{definition}
     DAGCircuit \cite{ibmquantum_dagcircuit} is a \acrfull{dag} representation of a quantum circuit. This intermediate representation allows the manipulation and optimization of quantum circuits.
 \end{definition}
-In the \acrshort{dag}, each node corresponds to a quantum gate or a measurement applied to qubits, while the edges indicate the flow of quantum information between operations, connecting the output of one operation to the input of another. The \acrshort{dag} structure can be analysed by counting the number of qubits and assessing the circuit depth, which may help simplify the circuit by merging gates, eliminating redundant operations, and applying other techniques to reduce the circuit's complexity. Figure \ref{fig:dag-embeded} illustrates the flow of a quantum circuit, where green nodes represent logical qubit inputs, blue nodes represent logical gates $g$, and red nodes represent logical qubit outputs. The edges in the graph depict the quantum information flow from input to output. Additionally, each level in the graph corresponds to the quantum circuit depth, so when multiple nodes appear at the same level, it indicates that the gate operations are applied to disjoint physical qubits.
+In the \acrshort{dag}, each node corresponds to a quantum gate or a measurement applied to qubits, while the edges indicate the flow of quantum information between operations, connecting the output of one operation to the input of another. The \acrshort{dag} structure can be analysed by counting the number of qubits and assessing the circuit depth, which may help simplify the circuit by merging gates, eliminating redundant operations, and applying other techniques to reduce the circuit's complexity \cite{li_tackling_2019}. Figure \ref{fig:dag-embeded} illustrates the flow of a quantum circuit, where green nodes represent logical qubit inputs, blue nodes represent logical gates $g$, and red nodes represent logical qubit outputs. The edges in the graph depict the quantum information flow from input to output. Additionally, each level in the graph corresponds to the quantum circuit depth, so when multiple nodes appear at the same level, it indicates that the gate operations are applied to disjoint physical qubits.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.32\linewidth]{image/dag_embeded.png}
+    \includegraphics[width=0.3\linewidth]{image/dag_embeded.png}
     \caption{\acrfull{dag} of the previous quantum circuit (Figure \ref{fig:circuit-init}). \acrshort{dag} consists of three nodes: \acrshort{dag} input nodes (green), \acrshort{dag} operation nodes (blue), and \acrshort{dag} output nodes (red). The arrows indicate the quantum information flow.}
     \label{fig:dag-embeded}
 \end{figure}
@@ -198,7 +199,7 @@ In the setup Figure \ref{fig:nearest-neighbour-distance}, the nearest neighbour 
 \begin{definition} % done chat
     The dependency list for $q_i$ contains the quantum gates $g_i$ that are located at logical qubits $q_L$. This list only considers two-qubit gates.
 \end{definition}
-The dependency list starts with the front layer of quantum gates that have no preceding gates, which is the leftmost gate in each dependency list\textsubscript{i}. A two-qubit gate is included in two related dependency lists and becomes an active gate when it is the front gate for both associated logical qubits at the same time. As shown in Figure \ref{fig:dependency-list}, there are three front gates ($g_1, g_2, \text{and } g_4$) with gate $g_1$ being the front gate for both dlist\textsubscript{1} and dlist\textsubscript{3}, making it an active gate. Single-qubit gates are not included in the dependency list because they can be directly executed on a physical qubit without requiring special consideration.
+The dependency list starts with the front layer of quantum gates that have no preceding gates, which is the leftmost gate in each dependency list\textsubscript{i}. A two-qubit gate is included in two related dependency lists and becomes an active gate when it is the front gate for both associated logical qubits at the same time. As shown in Figure \ref{fig:dependency-list}, gate $g_1$, as the front gate for both dlist\textsubscript{1} and dlist\textsubscript{3}, makes it an active gate. Single-qubit gates are not included in the dependency list because they can be directly executed on a physical qubit without requiring special consideration.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.7\linewidth]{image/dependency_list.png}
@@ -231,11 +232,11 @@ To overcome these issues, a dynamic look-ahead technique is introduced as the he
 \begin{equation}
     \text{Lookahead}(\text{SWAP}, q_i) = \sum_{g \in \text{window}} \text{effect}(g)
 \end{equation}
-The value of Lookahead includes both logical qubits $q_i$ and $q_j$ where the swap gate is inserted,
+The value of Lookahead(SWAP) includes both logical qubits $q_i$ and $q_j$ where the swap gate is inserted,
 \begin{equation}
     \text{Lookahead}(\text{SWAP}) = \text{Lookahead}(\text{SWAP}, q_i) + \text{Lookahead}(\text{SWAP}, q_j)
 \end{equation}
-
+All these definitions are incorporated to Algorithm \ref{alg:lookahead-swap-routing} \mycode{Lookahead Swap Routing}.
 \begin{algorithm}[htbp]
 \caption{Lookahead Swap Routing}\label{alg:lookahead-swap-routing}
 \hspace*{\algorithmicindent} \textbf{Input} Coupling Graph G(V, E), Circuit DAG \\
@@ -284,6 +285,7 @@ The value of Lookahead includes both logical qubits $q_i$ and $q_j$ where the sw
 \end{algorithmic}
 \end{algorithm}
 
+\subsection{Lookahead Swap Routing Algorithm}
 Figure \ref{fig:swap-trivial-basic} demonstrates the transpilation process using Qiskit \lstinline{TrivialLayout} \cite{ibmquantum_triviallayout} and \lstinline{BasicSwap} \cite{ibmquantum_basicswap} routing methods. The \lstinline{TrivialLayout} assigns virtual qubits to physical qubits by mapping $n$ logical qubits to device qubits $0, 1, ...,, N-1$ in ascending order. The \lstinline{BasicSwap} then performs minimal adjustments by inserting one or more swap gates before a two-qubit gate until the quantum information is located at adjacent physical qubits. \\
 In contrast, Figure \ref{fig:swap-lookahead} illustrates the process using the interaction layout from Algorithm \ref{alg:interaction-layout-mapping}. Initially, the algorithm converts the circuit to \acrshort{dag} and creates a dependency list for all two-qubit gates, as shown in Figure \ref{fig:dependency-list}. It then iterates over the \acrshort{dag}'s level layers, checking the gate operation's coupling map distance $D[q_i][q_j]$. If the distance is 1, indicating that the logical qubits are adjacent, the gate is directly applied, and the gate nodes are added to the \acrshort{dag} circuit. However, if the distance is greater than 1, the node is inserted into the active list. \\
 The first four layers have a distance of 1, allowing gates $g_0$ through $g_4$ to be executed directly. The next layer includes $g_5 (q_1, q_3)$ and $g_6 (q_0, q_2)$, for which the algorithm generates a list of physical swap candidates for each gate. For gate $g_5$, the swap candidates are $[(Q_2, Q_1), (Q_3, Q_1), (Q_3, Q_4)]$, while gate $g_6$ adds the swap candidate $(Q_1, Q_0)$. The algorithm then calculates the lookahead heuristic value for subsequent gates on the dependency list. If a negative effect is encountered during the iteration, the process terminates, and the lookahead window only considers non-negative values. After the calculation, the swap between $Q_3$ and $Q_1$ has the highest lookahead value. The next step is to recalculate the distance between the new swap positions for the gates. If the gates can now be executed directly, the gate operation is added to the DAG. The final step is to determine the order of the measurement operations to the classical registers, taking into account the updated logical-to-physical qubit mapping after the swaps.
@@ -291,7 +293,7 @@ The first four layers have a distance of 1, allowing gates $g_0$ through $g_4$ t
 \begin{figure}[htb]
     \begin{subfigure}{0.25\linewidth}
         \includegraphics[width=\linewidth]{image/coupling_map_trivial_basic.png}
-        \caption{One-to-one mapping index}
+        \caption{One-to-one mapping}
         \label{fig:one-to-one-mapping}
     \end{subfigure}
     \hfill
@@ -320,19 +322,19 @@ The Pass Manager responsible for routing requires the use of a \lstinline{Transf
 
 \section{Integration}
 \subsection{Staged Pass Manager} % done chat, turnitin
-The final step involves integrating both Algorithm \ref{alg:interaction-layout-mapping} for Interaction Layout Mapping and Algorithm \ref{alg:lookahead-swap-routing} for Dynamic Lookahead Swap Routing into the Staged Pass Manager. In this pass manager, the \lstinline{init} stage unrolls gates involving more than three qubits, and \lstinline{layout} applies the most effective interaction layout mapping. The \lstinline{routing} generates the minimal number of SWAP gates required to satisfy the device's coupling constraints. The final stage, \lstinline{translation}, converts the logical gates into the available basis gate set for the selected device backend. By employing this staged pass manager, the initial quantum circuit is fully translated and optimized for execution on the target backend. \\
-For instance, the initial circuit shown in Figure \ref{fig:circuit-init} has a circuit size of 11 and a circuit depth of 6. When using the \lstinline{TrivialLayout} and \lstinline{BasicSwap} methods, as depicted in Figure \ref{fig:swap-trivial-basic}, the circuit size increases to 17 and depth to 13 (Figure \ref{fig:routing-basic-swap}). In contrast, the \lstinline{InteractionLayout} and \lstinline{DynamicLookaheadSwap} methods, as shown in Figure \ref{fig:swap-lookahead}, produce a more compact circuit with a size of 14 and a depth of 9 (Figure \ref{fig:routing-lookahead}).
+The final step involves integrating both Algorithm \ref{alg:interaction-layout-mapping} \mycode{Interaction Layout Mapping} and Algorithm \ref{alg:lookahead-swap-routing} \mycode{Dynamic Lookahead Swap Routing} into the Staged Pass Manager. In this pass manager, the \lstinline{init} stage unrolls gates involving more than three qubits, and \lstinline{layout} applies the most effective interaction layout mapping. The \lstinline{routing} generates the minimal number of SWAP gates required to satisfy the device's coupling constraints. The final stage, \lstinline{translation}, converts the logical gates into the available basis gate set for the selected device backend. By employing this staged pass manager, the initial quantum circuit is fully translated and optimized for execution on the target backend. \\
+For instance, the initial circuit shown in Figure \ref{fig:circuit-init} has a circuit size of 11 and a circuit depth of 6. When using the \lstinline{TrivialLayout} and \lstinline{BasicSwap} methods, as depicted in Figure \ref{fig:swap-trivial-basic}, the circuit size increases to 17 and depth to 13 (Figure \ref{fig:routing-basic-swap}). In contrast, the \lstinline{InteractionLayout} and \lstinline{LookaheadSwap} methods, as shown in Figure \ref{fig:swap-lookahead}, produce a more compact circuit with a size of 14 and a depth of 9 (Figure \ref{fig:routing-lookahead}).
 
 \begin{figure}[htb]
     \centering
     \begin{subfigure}{0.8\linewidth}
         \includegraphics[width=\linewidth]{image/final_trivial_basic.png}
-        \caption{Translated final layout with \lstinline{BasicSwap} routing}
+        \caption{Translated final layout with \lstinline{BasicSwap} routing, with additional 2 SWAPs}
         \label{fig:routing-basic-swap}
     \end{subfigure}
     \begin{subfigure}{0.8\linewidth}
         \includegraphics[width=\linewidth]{image/final_lookahead.png}
-        \caption{Translated final layout with \lstinline{Lookahead} routing}
+        \caption{Translated final layout with \lstinline{Lookahead} routing, with additional 1 SWAP}
         \label{fig:routing-lookahead}
     \end{subfigure}
     \caption{Comparison for swap gate routing methods}
