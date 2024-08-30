@@ -1,15 +1,13 @@
-# qubit-mapping-distributed-qc
-# Qubit Mapping for Simulated Distributed Quantum Computers
+# Dynamic Qubit Mapping for Simulated Distributed Quantum Computers
 
 Required package: 
 1. `pip install ipykernel qiskit pillow pylatexenc matplotlib qiskit[visualization] qiskit-ibm-runtime`
-2. Benchmarking: `pip install mqt.bench openpyxl` for 5_benchmarking.ipynb and 6_table_plot.ipynb
+2. Benchmarking: `pip install mqt.bench openpyxl` for *5_benchmarking.ipynb* and *6_table_plot.ipynb*
 
 ## 0_generic_backend
 Build coupling graph map with available layout are: full, line, ring, grid, t_horizontal, t_vertical
 
-## 1_interaction_mapping
-Apply InteractionLayout mapping to quantum circuit  
+## 1_interaction_mapping 
 - Convert quantum circuit to Direct Acyclic Graph (DAG)
 - Apply `InteractionLayout` mapping of the DAG to coupling map
 - Rank all maps with Qubit Neighbourhood Value (QBN)
@@ -34,3 +32,31 @@ Apply InteractionLayout mapping to quantum circuit
 - Compare the result of the highest occurence between SabreSwap and LookaheadSwap
 - If 70% of the highest occurences are similar, it can be concluded that the results from LookeaheadSwap are correct
 
+## 5_benchmarking
+- Try with several [layouts](#layouts)  
+- Save in JSON tree structure: circuit_size -> algorithm_name -> size, depth, swap, interval  
+use routing: BasicSwap, SabreSwap, and LookaheadSwap  
+filename: `result/benchmarking_FINAL.json`  
+
+## 6_table_plot
+- parse json result in Panda DataFrame
+- sorted by *benchmark* and *layout*
+- print data in table format in file `.tex` in folder _latex_
+- save data in `.xlsx` in folder _excel_
+
+## Layouts
+| **Layout**   | **Number of qubits** | **Number of groups** |
+|--------------|----------------------|----------------------|
+| Full         | 20                   | 1                    |
+| Full         | 10                   | 2                    |
+| Grid         | 9                    | 2                    |
+| Ring         | 10                   | 2                    |
+| Full         | 7                    | 3                    |
+| Grid         | 8                    | 3                    |
+| Ring         | 7                    | 3                    |
+| Full         | 5                    | 4                    |
+| Grid         | 6                    | 4                    |
+| Ring         | 5                    | 4                    |
+| T Horizontal | 5                    | 4                    |
+| T Vertical   | 5                    | 4                    |
+| Line         | 1                    | 20                   |
